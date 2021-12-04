@@ -1,57 +1,56 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 def draw(nums, deck)
-    current = nums.shift
+  current = nums.shift
+  reduced_deck = []
 
-    reduced_deck = []
+  deck.each do |c|
+    bingo = mark(c, current)
+    reduced_deck.push(c) unless bingo
 
-    deck.each do |c|
-        if not mark(c, current)
-            reduced_deck.push(c) 
-        elsif deck.size == 1
-            score(c, current)
-            exit(0)
-        end
-    end
-
-    draw(nums, reduced_deck)
+    score(c, current) && exit(0) if bingo && (deck.size == 1)
+  end
+  draw(nums, reduced_deck)
 end
 
 def score(deck, num)
-    puts deck.sum{ |d| d.sum { |x| x!= "x" ? x.to_i : 0 }} * num.to_i
+  puts deck.sum { |d| d.sum { |x| x != 'x' ? x.to_i : 0 } } * num.to_i
 end
 
 def mark(deck, num)
-    for i in 0..4 do
-        for j in 0..4 do
-            if num == deck[i][j]
-                deck[i][j] = "x" 
-                if check(deck, i, j)
-                    return true      
-                end
-            end
-        end
+  (0..4).each do |i|
+    (0..4).each do |j|
+      next unless num == deck[i][j]
+
+      deck[i][j] = 'x'
+      return true if check(deck, i, j)
     end
-    
-    false
+  end
+
+  false
 end
 
 def check(deck, row, column)
+  rows_check = check_direction(deck, row, true)
+  return true if rows_check
 
-    cnt = 0
-    for i in 0..4 do
-        cnt +=1 if deck[row][i] == "x"
+  check_direction(deck, column, false)
+end
+
+def check_direction(deck, line, row)
+  cnt = 0
+  (0..4).each do |i|
+    if row
+      cnt += 1 if deck[line][i] == 'x'
+    elsif deck[i][line] == 'x'
+      cnt += 1
     end
-  
-    return true if cnt == 5
-    cnt = 0
-    for i in 0..4 do
-        cnt +=1 if deck[i][column] == "x"
-    end
+  end
 
-    return true if cnt == 5
+  return true if cnt == 5
 
-    false
+  false
 end
 
 file_path = File.expand_path('input.txt', __dir__)
@@ -61,6 +60,6 @@ cards = input.split("\n\n")
 
 draws = cards.shift.split(',')
 
-cards = cards.map{ |c| c = c.split("\n").map{ |r| r = r.split } }
+cards = cards.map { |c| c.split("\n").map(&:split) }
 
 draw(draws, cards)
