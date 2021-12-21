@@ -13,17 +13,16 @@ edge = '.'
   h = image.size + 8
   w = image.size + 8
 
-  image = image.map { |r| [edge,edge,edge,edge] + r + [edge,edge,edge,edge] }
-  
-  image.unshift(Array.new(w, edge))
-  image.push(Array.new(w, edge))
-  image.unshift(Array.new(w, edge))
-  image.push(Array.new(w, edge))
-  image.unshift(Array.new(w, edge))
-  image.push(Array.new(w, edge))
-  image.unshift(Array.new(w, edge))
-  image.push(Array.new(w, edge))
+  image = image.map { |r| [edge, edge, edge, edge] + r + [edge, edge, edge, edge] }
 
+  image.unshift(Array.new(w, edge))
+  image.push(Array.new(w, edge))
+  image.unshift(Array.new(w, edge))
+  image.push(Array.new(w, edge))
+  image.unshift(Array.new(w, edge))
+  image.push(Array.new(w, edge))
+  image.unshift(Array.new(w, edge))
+  image.push(Array.new(w, edge))
 
   new_image = Array.new(h) { Array.new(w) }
 
@@ -98,14 +97,13 @@ edge = '.'
 
   image = new_image
 
-  if change_edge
-    if edge == '#'
-        edge = '.' 
-    else
-        edge = '#'
-    end
-  end
+  next unless change_edge
 
+  edge = if edge == '#'
+           '.'
+         else
+           '#'
+         end
 end
 
-print image.flatten.select{ |c| c == '#' }.size
+print image.flatten.select { |c| c == '#' }.size
